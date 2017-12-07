@@ -105,11 +105,11 @@ end
 function looting.run()
   local m_millis, catching = looting.getCatch()
 
-  if catching and g_clock.millis() - m_millis > 10000 then
+  if catching and g_clock.millis() - m_millis > 5000 then
     looting.stop()
     looting.stopCatch()
     return
-  elseif catch and g_clock.millis() - m_millis < 10000 then
+  elseif catch and g_clock.millis() - m_millis < 5000 then
   	return
   end
 
@@ -194,7 +194,7 @@ function looting.lootProcess(deadCreature, try)
   end
 end
 
-function looting.moveToBackpack(m_item, refuseContainerId)
+function looting.moveToBackpack(m_item, refuseContainerId) --tentei de tudo pra checar se a bp ta cheia joga em outra não consegui ;/
   local backpacks = g_game.getContainers()
   for k,bp in pairs(backpacks) do
   	if bp:getId() ~= refuseContainerId then
@@ -220,7 +220,7 @@ end
 function looting.onContainerOpen(container, parentContainer)
   if table.size(looting.getLootList()) > 0 then
   	
-    if container:getName():lower():match("dead") then
+    if container:getName():lower():match("dead") or container:getName():lower():match("slain") then --alguns corpses sao slain
       creatureContainer = {
         id = container:getId(),
         name = container:getName(),
@@ -278,7 +278,7 @@ function looting.moveLoot(container, try)
       scheduleEvent(function()
       	try = try - 1
       	looting.moveLoot(container, try) 
-      end, 200)
+      end, 600) -- 200 fica dando "sorry"
     end
   end
 end
